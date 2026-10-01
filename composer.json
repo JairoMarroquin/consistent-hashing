@@ -1,0 +1,22 @@
+{
+    "name": "jmarr/consistent-hashing",
+    "description": "A lightweight consistent hashing implementation for PHP",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jmarr\\ConsistentHashing\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jairo Marroquín"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.3"
+    }
+}
