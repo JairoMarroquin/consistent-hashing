@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmarr\ConsistentHashing\Test;
+namespace Jmarr\ConsistentHashing\Tests;
 
 use Jmarr\ConsistentHashing\HashRing;
 use PHPUnit\Framework\TestCase;

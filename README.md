@@ -67,6 +67,8 @@ Run the test suite with PHPUnit:
 
 ```bash
 ./vendor/bin/phpunit tests
+
+composer test
 ```
 
 ## Requirements
