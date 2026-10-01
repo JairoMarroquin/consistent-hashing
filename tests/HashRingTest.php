@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jmarr\ConsistentHashing\Tests;
 
 use Jmarr\ConsistentHashing\HashRing;
+use Jmarr\ConsistentHashing\Tests\Support\FakeHasher;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -68,7 +69,15 @@ final class HashRingTest extends TestCase
 
     public function testWrapsAroundToFirstNode(): void
     {
-        $ring = new HashRing();
+
+        $hasher = new FakeHasher([
+            'server-1' => 100,
+            'server-2' => 500,
+            'server-3' => 900,
+            'my-key' => 950
+        ]); 
+        $ring = new HashRing($hasher);
+
         $nodes = [
             'server-1',
             'server-2',
@@ -79,29 +88,8 @@ final class HashRingTest extends TestCase
             $ring->addNode($node);
         }
 
-        $nodesHashes = array_map(
-            fn (string $node): int => crc32($node),
-            $nodes
-        );
+        $node = $ring->getNode('my-key');
 
-        $maxNodeHash = max($nodesHashes);
-
-        $key = null;
-
-        for($i=0;$i<10000;$i++){
-            $candidate = "key-".$i;
-            if(crc32($candidate) > $maxNodeHash){
-                $key = $candidate;
-                break;
-            }
-        }
-
-        $this->assertNotNull($key);
-
-        $expectedFirstNode = $nodes[
-            array_search(min($nodesHashes), $nodesHashes, true)
-        ];
-
-        $this->assertSame($expectedFirstNode, $ring->getNode($key));
+        $this->assertSame('server-1', $node);
     }
 }
