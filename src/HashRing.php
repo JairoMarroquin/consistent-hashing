@@ -42,6 +42,16 @@ final class HashRing
         return $this->ring[$node];
     }
 
+    public function removeNode(string $node): void
+    {
+        $hash = $this->hasher->hash($node);
+        
+        if(!isset($this->ring[$hash])){
+            throw new \RuntimeException("Node doesn't exist in the ring");
+        }
+        unset($this->ring[$hash]);
+    }
+
     private function sortRing()
     {
         ksort($this->ring);

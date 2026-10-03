@@ -92,4 +92,62 @@ final class HashRingTest extends TestCase
 
         $this->assertSame('server-1', $node);
     }
+
+    public function testRemoveNodesFromRing(): void
+    {
+        $hasher = new FakeHasher([
+            'node-1' => 100,
+            'node-2' => 500,
+            'node-3' => 900,
+            'my-key' => 400,
+        ]);
+
+        $ring = new HashRing($hasher);
+
+        $ring->addNode('node-1');
+        $ring->addNode('node-2');
+        $ring->addNode('node-3');
+
+        $this->assertSame('node-2', $ring->getNode('my-key'));
+
+        $ring->removeNode('node-2');
+
+        $this->assertSame('node-3', $ring->getNode('my-key'));
+    }
+
+    public function testRemoveNodeThatDoesNotExist(): void
+    {
+        $hasher = new FakeHasher([
+            'node-1' => 100,
+            'node-2' => 200
+        ]);
+
+        $ring = new HashRing($hasher);
+
+        $ring->addNode('node-1');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Node doesn't exist in the ring");
+
+        $ring->removeNode('node-2');
+    }
+
+    public function testRemovingLatNodeLeavesRingEmpty(): void
+    {
+        $hasher = new FakeHasher([
+            'node-1' => 100,
+            'my-key' => 200
+        ]);
+
+        $ring = new HashRing($hasher);
+
+        $ring->addNode('node-1');
+        $ring->removeNode('node-1');
+
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No nodes in the ring');
+
+        $ring->getNode('my-key');
+    }
 }
